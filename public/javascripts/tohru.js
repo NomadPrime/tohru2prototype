@@ -27,9 +27,7 @@ var UserInfo = {
 };
 
 var WelcomeScreen = {
-	name: '',
 	nameErr: false,
-	meeting: '',
 	meetErr: false,
 	load: function()
 	{
@@ -38,26 +36,33 @@ var WelcomeScreen = {
 		$('#origin').append('<p id="nameline"></p>');
 		$('#origin').append('<p id="meetingline"></p>');
 		$('#origin').append('<p id="buttonline"></p>');
-		$('#nameline').append('Name: ');
-		$('#nameline').append('<input type="text" id="namefield" value="'+this.name+'"></input>');
+		$('#nameline').append('Name(affil.): ');
+		$('#nameline').append('<input type="text" id="namefield" value="'+UserInfo.name+'"></input>');
 		if(this.nameErr) $('#nameline').append('<span style="color:#ff0000"> PLEASE INPUT A NAME</span>');
 		$('#meetingline').append('Meeting Name: ');
-		$('#meetingline').append('<input type="text" id="meetingfield" value="'+this.meeting+'"></input>');
+		$('#meetingline').append('<input type="text" id="meetingfield" value="'+UserInfo.meeting+'"></input>');
 		if(this.meetErr) $('#meetingline').append('<span style="color:#ff0000"> PLEASE INPUT A MEETING NAME</span>');
+		$('#buttonline').append('<button onclick="WelcomeScreen.create();">Create Meeting</button>');
 		$('#buttonline').append('<button onclick="WelcomeScreen.join();">Join Meeting</button>');
 		$('#buttonline').append('<button onclick="WelcomeScreen.modpass();">Login as Moderator</button>');
 	},
+	create: function()
+	{
+		this.nameErr = false;
+		this.meetErr = false;
+		//TODO: CREATE-A-MEETING SCREEN
+	},
 	join: function()
 	{
-		this.name = $('#namefield').val();
+		UserInfo.name = $('#namefield').val();
 		this.nameErr = (this.name == '');
-		this.meeting = $('#meetingfield').val();
+		UserInfo.meeting = $('#meetingfield').val();
 		this.meetErr = (this.meeting == '');
 		if(this.nameErr || this.meetErr) this.load();
 		else
 		{
-			//CHECK IF MEETING EXISTS
-			//LOAD THE MAIN APP PAGE
+			//TODO: CHECK IF MEETING EXISTS
+			//TODO: LOAD THE MAIN APP PAGE
 		}
 	},
 	modpass: function()
@@ -69,13 +74,17 @@ var WelcomeScreen = {
 		if(this.nameErr || this.meetErr) this.load();
 		else
 		{
-			//CHECK IF MEETING EXISTS
-			//LOAD MODPASS SCREEN
+			//TODO: CHECK IF MEETING EXISTS
+			//TODO: LOAD MODPASS SCREEN
 		}
 	}
 };
 
 var ModPassScreen = {
+	
+};
+
+var CreateScreen = {
 	
 };
 

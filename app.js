@@ -9,11 +9,13 @@ var bodyParser = require('body-parser');
 var nano = require('nano')('http://localhost:5984');
 
 var routes = require('./routes/index');
+var lists = require('./routes/lists');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -23,6 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/list', lists);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
