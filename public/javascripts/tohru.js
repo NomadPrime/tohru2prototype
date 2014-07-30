@@ -21,75 +21,207 @@ var IDGen = {
 	}
 };
 
+var updateLoop = false;
+
 var UserInfo = {
 	name: '',
-	meeting: ''
+	meeting: '',
+	key: '',
+	modpass: '',
+	isMod: false
 };
 
 var WelcomeScreen = {
-	nameErr: false,
-	meetErr: false,
 	load: function()
 	{
 		$('#origin').empty();
-		$('#origin').append('<p>WELCOME TO TOHRU NAVIGATION TEST</p>');
+		$('#origin').append('<p>WELCOME TO TOHRU</p>');
 		$('#origin').append('<p id="nameline"></p>');
 		$('#origin').append('<p id="meetingline"></p>');
 		$('#origin').append('<p id="buttonline"></p>');
 		$('#nameline').append('Name(affil.): ');
 		$('#nameline').append('<input type="text" id="namefield" value="'+UserInfo.name+'"></input>');
-		if(this.nameErr) $('#nameline').append('<span style="color:#ff0000"> PLEASE INPUT A NAME</span>');
 		$('#meetingline').append('Meeting Name: ');
 		$('#meetingline').append('<input type="text" id="meetingfield" value="'+UserInfo.meeting+'"></input>');
-		if(this.meetErr) $('#meetingline').append('<span style="color:#ff0000"> PLEASE INPUT A MEETING NAME</span>');
 		$('#buttonline').append('<button onclick="WelcomeScreen.create();">Create Meeting</button>');
 		$('#buttonline').append('<button onclick="WelcomeScreen.join();">Join Meeting</button>');
 		$('#buttonline').append('<button onclick="WelcomeScreen.modpass();">Login as Moderator</button>');
 	},
 	create: function()
 	{
-		this.nameErr = false;
-		this.meetErr = false;
-		//TODO: CREATE-A-MEETING SCREEN
+		UserInfo.name = $('#namefield').val();
+		UserInfo.meeting = $('#meetingfield').val();
+		CreateScreen.load();
 	},
 	join: function()
 	{
 		UserInfo.name = $('#namefield').val();
-		this.nameErr = (this.name == '');
 		UserInfo.meeting = $('#meetingfield').val();
-		this.meetErr = (this.meeting == '');
-		if(this.nameErr || this.meetErr) this.load();
+		if($('#namefield').val() == '')
+		{
+			alert('Please input your name');
+			WelcomeScreen.load();
+		}
+		else if($('#meetingfield').val() == '')
+		{
+			alert('Please input a meeting name');
+			WelcomeScreen.load();
+		}
 		else
 		{
-			//TODO: CHECK IF MEETING EXISTS
-			//TODO: LOAD THE MAIN APP PAGE
+			$.post('/list/register', UserInfo, function(data)
+			{
+				if(parseInt(data.key) < 0)
+				{
+					alert('No record found of meeting "'+UserInfo.meeting+'"');
+					WelcomeScreen.load();
+				}
+				else
+				{
+					UserInfo.key = data.key;
+					MainScreen.load();
+				}
+			});
 		}
 	},
 	modpass: function()
 	{
-		this.name = $('#namefield').val();
-		this.nameErr = (this.name == '');
-		this.meeting = $('#meetingfield').val();
-		this.meetErr = (this.meeting == '');
-		if(this.nameErr || this.meetErr) this.load();
+		UserInfo.name = $('#namefield').val();
+		UserInfo.meeting = $('#meetingfield').val();
+		if($('#namefield').val() == '')
+		{
+			alert('Please input your name');
+			WelcomeScreen.load();
+		}
+		else if($('#meetingfield').val() == '')
+		{
+			alert('Please input a meeting name');
+			WelcomeScreen.load();
+		}
 		else
 		{
-			//TODO: CHECK IF MEETING EXISTS
-			//TODO: LOAD MODPASS SCREEN
+			$.post('/list/meetexists', UserInfo, function(data)
+			{
+				if(data.exists)
+				{
+					ModPassScreen.load();
+				}
+				else
+				{
+					alert('No record found of meeting "'+UserInfo.meeting+'"');
+					WelcomeScreen.load();
+				}
+			});
 		}
 	}
 };
 
 var ModPassScreen = {
-	
+	load: function()
+	{
+		$('#origin').empty();
+		$('#origin').append('<p>Please Enter the Moderator Password for "'+UserInfo.meeting+'"');
+		$('#origin').append('<p id="passline"></p>');
+		$('#passline').append('Password: ');
+		$('#passline').append('<input type="password" id="passfield" value=""></input>');
+		$('#passline').append(' ');
+		$('#passline').append('<button onclick="ModPassScreen.submit()">Login</button>');
+		$('#passline').append('<button onclick="ModPassScreen.goback()">Go Back</button>');
+	},
+	submit: function()
+	{
+		UserInfo.modpass = $('#passfield').val();
+		$.post('/list/registermod', UserInfo, function(data)
+		{
+			if(parseInt(data.key) < 0)
+			{
+				alert('Invalid password');
+				ModPassScreen.load();
+			}
+			else
+			{
+				UserInfo.key = data.key;
+				UserInfo.isMod = true;
+				MainScreen.load();
+			}
+		});
+	},
+	goback: function()
+	{
+		WelcomeScreen.load();
+	}
 };
 
 var CreateScreen = {
-	
+	load: function()
+	{
+		$('#origin').empty();
+		$('#origin').append('<p>Create a New Meeting:</p>');
+		$('#origin').append('<p id="meetingline"></p>');
+		$('#origin').append('<p id="passline"></p>');
+		$('#origin').append('<p id="buttonline"></p>');
+		$('#meetingline').append('Meeting Name: ');
+		$('#meetingline').append('<input type="text" id="meetingfield" value="'+UserInfo.meeting+'"></input>');
+		$('#passline').append('Moderator Password: ');
+		$('#passline').append('<input type="password" id="passfield" value=""></input>');
+		$('#buttonline').append('<button onclick="CreateScreen.create();">Create Meeting</button>');
+		$('#buttonline').append('<button onclick="CreateScreen.goback();">Go Back</button>');
+	},
+	create: function()
+	{
+		UserInfo.meeting = $('#meetingfield').val();
+		UserInfo.modpass = $('#passfield').val();
+		if($('#meetingfield').val() == '')
+		{
+			alert('Please input a meeting name');
+			CreateScreen.load();
+		}
+		else if($('#passfield').val() == '')
+		{
+			alert('Please input a moderator password');
+			CreateScreen.load();
+		}
+		else
+		{
+			$.post('/list/createnew', UserInfo, function(data)
+			{
+				if(data.nameTaken)
+				{
+					alert('Record for meeting "'+UserInfo.meeting+'" already exists');
+					CreateScreen.load();
+				}
+				else
+				{
+					alert('Meeting "'+UserInfo.meeting+'" registered');
+					WelcomeScreen.load();
+				}
+			});
+		}
+	},
+	goback: function()
+	{
+		UserInfo.meeting = $('#meetingfield').val();
+		WelcomeScreen.load();
+	}
+};
+
+var MainScreen = {
+	load: function()
+	{
+		$('#origin').empty();
+		$('#origin').append('LOL');
+	}
 };
 
 
 $(document).ready(function()
 {
 	WelcomeScreen.load();
+	setInterval(function()
+	{
+		if(updateLoop)
+		{
+			//TODO: list updating goes here
+		}
+	}, 1000);	//frame delay in milliseconds
 });

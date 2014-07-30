@@ -6,15 +6,9 @@ router.get('/', function(req, res)
 	res.sendfile('./views/tohru.html');
 });
 
-/* GET Hello World page. */
-router.get('/hello', function(req, res)
+router.get('/test', function(req, res)
 {
-  res.sendfile('./views/helloworld.html');
-});
-
-router.get('/navi', function(req, res)
-{
-	res.sendfile('./views/navi.html');
+	res.sendfile('./views/test.html');
 });
 
 module.exports = router;
