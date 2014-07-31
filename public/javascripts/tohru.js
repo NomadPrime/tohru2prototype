@@ -28,12 +28,7 @@ var UserInfo = {
 	meeting: '',
 	key: '',
 	modpass: '',
-	isMod: false,
-	hand: {
-		raised: false,
-		type: '',
-		comment: ''
-	}
+	isMod: false
 };
 
 var WelcomeScreen = {
@@ -147,7 +142,6 @@ var ModPassScreen = {
 			{
 				UserInfo.key = data.key;
 				UserInfo.isMod = true;
-				UserInfo.name = UserInfo.name + ' (Moderator)';
 				MainScreen.load();
 			}
 		});
@@ -215,49 +209,7 @@ var MainScreen = {
 	load: function()
 	{
 		$('#origin').empty();
-		$('#origin').append('<div id="MOTD"></div>');
-		$('#origin').append('<div id="controls"></div>');
-		$('#origin').append('<div id="theList"></div>');
-		updateLoop = true;
-		this.drawControls();
-		this.drawList();
-	},
-	drawControls: function()
-	{
-		$('#controls').empty();
-		$('#controls').append('<p id="commentline"></p>');
-		$('#controls').append('<p id="buttonline"></p>');
-		$('#controls').append('<p></p>');	//for spacing
-		$('#commentline').append('<input id="comment" type="text" size=100 value="Add a comment (optional)" onclick="this.value=\'\'"></input>');
-		$('#buttonline').append('<button onclick="drawControls.raise(\'S\');">Same Topic</button>');
-		$('#buttonline').append('<button onclick="drawControls.raise(\'N\');">New Topic</button>');
-		$('#buttonline').append('<button onclick="drawControls.raise(\'A\');">Answer to Question</button>');
-		$('#buttonline').append('<button onclick="drawControls.raise(\'P\');">Propose Resolution</button>');
-		if(UserInfo.hand.raised)	//change to check if hand is currently raised
-		{
-			$('#buttonline').append('      ');
-			$('#buttonline').append('<button onclick="drawControls.down();">Lower Hand</button>');
-		}
-	},
-	drawList: function()
-	{
-		var first = true;
-	},
-	raise: function(raisetype)
-	{
-		UserInfo.hand.type = raisetype;
-		if($('#comment').val() != 'Add a comment (optional)') UserInfo.hand.comment = $('#comment').val();
-		$.get('/list/raise', UserInfo);
-		UserInfo.hand.raised = true;
-		this.drawControls();
-	},
-	down: function()
-	{
-		UserInfo.hand.type = '';
-		UserInfo.hand.raised = false;
-		UserInfo.hand.comment = '';
-		$.get('/list/lower', UserInfo);
-		this.drawControls();
+		$('#origin').append('LOL');
 	}
 };
 
@@ -269,7 +221,7 @@ $(document).ready(function()
 	{
 		if(updateLoop)
 		{
-			MainScreen.drawList();
+			//TODO: list updating goes here
 		}
 	}, 1000);	//frame delay in milliseconds
 });
