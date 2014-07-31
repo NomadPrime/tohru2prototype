@@ -149,7 +149,7 @@ router.post('/registermod', function(req, res)
 			}
 			else
 			{
-				updateRegister(db, req.body.meeting, '[MOD] '+req.body.name);
+				updateRegister(db, req.body.meeting, req.body.name+' (Moderator)');
 				console.log('User "'+req.body.name+'" registered with moderator access in meeting "'+req.body.meeting+'"');
 				res.json({key: body.key});
 			}
@@ -175,6 +175,7 @@ router.post('/createnew', function(req, res)
 			var newMeeting = {
 				key: Math.floor((Math.random()*10000000000000000000000)+1).toString(36),
 				update: Date.now(),
+				MOTD: '',
 				hands: [],
 				users: []
 			};
