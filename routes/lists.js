@@ -196,4 +196,197 @@ router.post('/createnew', function(req, res)
 	});
 });
 
+/**
+ * Raises user's hand
+ */
+handRaise = function(req, res)
+{
+	db.get(req.body.meeting, function(err, body)
+	{
+		if(err)
+		{
+			res.json({success:false});
+		}
+		else
+		{
+			var found = false;
+			if(body.hands.length > 0)
+			{
+				console.log(body.hands.length);
+			for(i = 0; i < body.hands.length; i++)
+			{
+				if(body.hands[i].name == req.body.name && body.hands[i].ID == req.body.ID)
+				{
+					body.hands[i].type = req.body.hand.type;
+					body.hands[i].comment = req.body.hand.comment;
+					found = true;
+				}
+			}
+			}
+			if(!found)
+			{
+				body.hands.push({
+					name: req.body.name,
+					ID: req.body.ID,
+					type: req.body.hand.type,
+					comment: req.body.hand.comment
+				});
+			}
+			body.update = Date.now();
+			db.insert(body, function(err, body)
+			{
+				if(err)
+				{
+					handRaise(req, res);
+				}
+				else
+				{
+					console.log('User "'+req.body.name+'" raised his hand');
+					res.json({success:true});
+				}
+			});
+		}
+	});
+};
+router.post('/raise', function(req, res){handRaise(req, res);});
+
+/**
+ * Lowers user's hand
+ */
+handLower = function(req, res)
+{
+	db.get(req.body.meeting, function(err, body)
+	{
+		if(err)
+		{
+			res.json({success:false});
+		}
+		else
+		{
+			for(i = 0; i < body.hands.length; i++)
+			{
+				if(body.hands[i].name == req.body.name && body.hands[i].ID == req.body.ID)
+				{
+					body.hands.splice(i, 1);
+				}
+			}
+			body.update = Date.now();
+			db.insert(body, function(err, body)
+			{
+				if(err)
+				{
+					handLower(req, res);
+				}
+				else
+				{
+					console.log('User "'+req.body.name+'" lowered his hand');
+					res.json({success:true});
+				}
+			});
+		}
+	});
+};
+router.post('/lower', function(req, res){handLower(req, res);});
+
+
+totop = function(req, res)
+{
+	db.get(req.body.meeting, function(err, body)
+	{
+		if(err)
+		{
+			res.json({});
+		}
+		else
+		{
+			var hand = {
+				name: '',
+				ID: '',
+				type: '',
+				comment: ''
+			};
+			for(i = 0; i < body.hands.length; i++)
+			{
+				if(body.hands[i].name == req.body.name && body.hands[i].ID == req.body.ID)
+				{
+					hand.name = body.hands[i].name;
+					hand.ID = body.hands[i].ID;
+					hand.type = body.hands[i].type;
+					hand.comment = body.hands[i].comment;
+					body.hands.splice(i, 1);
+				}
+			}
+			body.hands.unshift(hand);
+			body.update = Date.now();
+			db.insert(body, function(err, body)
+			{
+				if(err)
+				{
+					totop(req, res);
+				}
+				else
+				{
+					console.log('User "'+req.body.name+'" was made speaker by mod');
+					res.json({success:true});
+				}
+			});
+		}
+	});
+};
+router.post('/totop', function(req, res){totop(req, res);});
+
+advance = function(req, res)
+{
+	db.get(req.body.meeting, function(err, body)
+	{
+		if(err)
+		{
+			res.json({});
+		}
+		else
+		{
+			body.hands.shift();
+			body.update = Date.now();
+			db.insert(body, function(err, body)
+			{
+				if(err)
+				{
+					advance(req, res);
+				}
+				else
+				{
+					console.log('Queue advanced by mod');
+					res.json({success:true});
+				}
+			});
+		}
+	});
+};
+router.post('/advance', function(req, res){advance(req, res);});
+
+/**
+ * Fetches meeting data if the key matches
+ */
+router.get('/fetch', function(req, res)
+{
+	db.get(req.query.meeting, function(err, body)
+	{
+		if(err)
+		{
+			res.json({key: ''});
+		}
+		else
+		{
+			if(body.key == req.query.key)
+			{
+				res.json(body);
+			}
+			else
+			{
+				res.json({key: ''});
+			}
+		}
+	});
+});
+
 module.exports = router;
