@@ -305,6 +305,7 @@ totop = function(req, res)
 				type: '',
 				comment: ''
 			};
+			body.hands.shift();
 			for(i = 0; i < body.hands.length; i++)
 			{
 				if(body.hands[i].name == req.body.name && body.hands[i].ID == req.body.ID)
@@ -363,6 +364,43 @@ advance = function(req, res)
 	});
 };
 router.post('/advance', function(req, res){advance(req, res);});
+
+
+modnext = function(req, res)
+{
+	db.get(req.body.meeting, function(err, body)
+	{
+		if(err)
+		{
+			res.json({});
+		}
+		else
+		{
+			var hand = {
+				name: req.body.name,
+				ID: req.body.ID,
+				type: req.body.hand.type,
+				comment: req.body.hand.comment
+			};
+			body.hands.shift();
+			body.update = Date.now();
+			body.hands.unshift(hand);
+			db.insert(body, function(err, body)
+			{
+				if(err)
+				{
+					modnext(req, res);
+				}
+				else
+				{
+					console.log('Moderator moved to current speaker');
+					res.json({success: true});
+				}
+			});
+		}
+	});
+};
+router.post('/modnext', function(req, res){modnext(req, res);});
 
 /**
  * Fetches meeting data if the key matches

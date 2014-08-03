@@ -11,4 +11,9 @@ router.get('/test', function(req, res)
 	res.sendfile('./views/test.html');
 });
 
+router.get('/lay', function(req, res)
+{
+	res.sendfile('./views/laytest.html');
+});
+
 module.exports = router;

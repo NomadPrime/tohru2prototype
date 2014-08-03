@@ -20,6 +20,7 @@ $(document).ready(function()
 	panels.push({bID: Math.floor((Math.random()*10000)+1), ID:Math.floor((Math.random()*10000)+1)});
 	panels.push({bID: Math.floor((Math.random()*10000)+1), ID:Math.floor((Math.random()*10000)+1)});
 	$('#origin').append('<p>test</p>');
+	$('#origin').append('<img src="images/TOHRU_Hand.png" alt="TOHRU Hand Logo"></img>');
 	panels.forEach(function(panel)
 	{
 		$('#origin').append('<div id="'+panel.bID+'"></div>');

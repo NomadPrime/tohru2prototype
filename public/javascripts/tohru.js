@@ -213,12 +213,19 @@ var CreateScreen = {
 };
 
 var MainScreen = {
+	lastRev: '',
 	load: function()
 	{
 		$('#origin').empty();
-		$('#origin').append('<div id="MOTD"></div>');
+		$('#origin').append('<div id="title"></div>');
 		$('#origin').append('<div id="controls"></div>');
 		$('#origin').append('<div id="theList"></div>');
+		$('#title').append('<table><tr><td><img src="images/TOHRU_Hand.png"></img></td><td><p>Trace Online Hand Raising Utility</p><p id="MOTD"></p></td></tr></table>');
+		/*
+		$('#title').append('<img src="images/TOHRU_Hand.png" style="float:left"></img>');
+		$('#title').append('<p style="float:left">Trace Online Hand Raising Utility</p>');
+		$('#title').append('<div id="MOTD"></div>');
+		*/
 		updateLoop = true;
 		this.drawControls();
 		this.drawList();
@@ -256,10 +263,11 @@ var MainScreen = {
 	{
 		$.get('/list/fetch', UserInfo, function(data)
 		{
-			if(data.key != '')
+			if(data.key != '' && data._rev != MainScreen.lastRev)
 			{
+				MainScreen.lastRev = data._rev;
 				$('#MOTD').empty();
-				if(data.MOTD != '') $('#MOTD').append('<p>'+data.MOTD+'</p>');
+				$('#MOTD').append('<p>'+data.MOTD+'</p>');
 				$('#theList').empty();
 				var firstformat = ' style="color: #ff3333; font-size: 25px"';
 				var firsttext = 'Current Speaker: ';
@@ -268,12 +276,16 @@ var MainScreen = {
 				{
 					uid = IDGen.newID();
 					$('#theList').append('<p id="'+uid+'"'+firstformat+'></p>');
-					$('#'+uid).append('['+hand.type+']');
+					if(hand.type == 'S') $('#'+uid).append('<img src="images/S_Icon.png" height="25" width="25"></img>');
+					else if(hand.type == 'N') $('#'+uid).append('<img src="images/N_Icon.png" height="25" width="25"></img>');
+					else if(hand.type == 'A') $('#'+uid).append('<img src="images/A_Icon.png" height="25" width="25"></img>');
+					else if(hand.type == 'P') $('#'+uid).append('<img src="images/P_Icon.png" height="25" width="25"></img>');
+					else $('#'+uid).append('['+hand.type+']');
 					$('#'+uid).append('  ');
 					if(UserInfo.isMod)
 					{
-						$('#'+uid).append('<button onclick="ModFunctions.forceDown(\''+hand.name+'\',\''+hand.ID+'\');">X</button>');
-						$('#'+uid).append('<button onclick="ModFunctions.toTop(\''+hand.name+'\',\''+hand.ID+'\');">^</button>');
+						$('#'+uid).append('<img src="images/Delete_Icon.png" onclick="ModFunctions.forceDown(\''+hand.name+'\',\''+hand.ID+'\');"></img>');
+						$('#'+uid).append('<img src="images/Totop_Icon.png" onclick="ModFunctions.toTop(\''+hand.name+'\',\''+hand.ID+'\');"></img>');
 						$('#'+uid).append('  ');
 					}
 					$('#'+uid).append(firsttext+hand.name);
