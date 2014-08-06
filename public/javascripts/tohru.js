@@ -41,17 +41,9 @@ var WelcomeScreen = {
 	load: function()
 	{
 		$('#origin').empty();
-		$('#origin').append('<p>WELCOME TO TOHRU</p>');
-		$('#origin').append('<p id="nameline"></p>');
-		$('#origin').append('<p id="meetingline"></p>');
-		$('#origin').append('<p id="buttonline"></p>');
-		$('#nameline').append('Name(affil.): ');
-		$('#nameline').append('<input type="text" id="namefield" value="'+UserInfo.name+'"></input>');
-		$('#meetingline').append('Meeting Name: ');
-		$('#meetingline').append('<input type="text" id="meetingfield" value="'+UserInfo.meeting+'"></input>');
-		$('#buttonline').append('<button onclick="WelcomeScreen.create();">Create Meeting</button>');
-		$('#buttonline').append('<button onclick="WelcomeScreen.join();">Join Meeting</button>');
-		$('#buttonline').append('<button onclick="WelcomeScreen.modpass();">Login as Moderator</button>');
+		$('#origin').append(PageLayout.WelcomeScreen);
+		$('#namefield').val(UserInfo.name);
+		$('#meetingfield').val(UserInfo.meeting);
 	},
 	create: function()
 	{
@@ -126,13 +118,8 @@ var ModPassScreen = {
 	load: function()
 	{
 		$('#origin').empty();
-		$('#origin').append('<p>Please Enter the Moderator Password for "'+UserInfo.meeting+'"');
-		$('#origin').append('<p id="passline"></p>');
-		$('#passline').append('Password: ');
-		$('#passline').append('<input type="password" id="passfield" value=""></input>');
-		$('#passline').append(' ');
-		$('#passline').append('<button onclick="ModPassScreen.submit()">Login</button>');
-		$('#passline').append('<button onclick="ModPassScreen.goback()">Go Back</button>');
+		$('#origin').append(PageLayout.ModPassScreen);
+		$('#MEETINGNAME').replaceWith(UserInfo.meeting);
 	},
 	submit: function()
 	{
@@ -163,16 +150,8 @@ var CreateScreen = {
 	load: function()
 	{
 		$('#origin').empty();
-		$('#origin').append('<p>Create a New Meeting:</p>');
-		$('#origin').append('<p id="meetingline"></p>');
-		$('#origin').append('<p id="passline"></p>');
-		$('#origin').append('<p id="buttonline"></p>');
-		$('#meetingline').append('Meeting Name: ');
-		$('#meetingline').append('<input type="text" id="meetingfield" value="'+UserInfo.meeting+'"></input>');
-		$('#passline').append('Moderator Password: ');
-		$('#passline').append('<input type="password" id="passfield" value=""></input>');
-		$('#buttonline').append('<button onclick="CreateScreen.create();">Create Meeting</button>');
-		$('#buttonline').append('<button onclick="CreateScreen.goback();">Go Back</button>');
+		$('#origin').append(PageLayout.CreateScreen);
+		$('#meetingfield').val(UserInfo.meeting);
 	},
 	create: function()
 	{
@@ -240,10 +219,10 @@ var MainScreen = {
 		if(UserInfo.hand.comment == '') comval = 'value="Add a comment (optional)" onclick="this.value=\'\'"';
 		else comval = 'value = "'+UserInfo.hand.comment+'"';
 		$('#commentline').append('<input id="comment" type="text" size=100 '+comval+'></input>');
-		$('#buttonline').append('<button onclick="MainScreen.raise(\'S\');">Same Topic</button>');
-		$('#buttonline').append('<button onclick="MainScreen.raise(\'N\');">New Topic</button>');
-		$('#buttonline').append('<button onclick="MainScreen.raise(\'A\');">Answer to Question</button>');
-		$('#buttonline').append('<button onclick="MainScreen.raise(\'P\');">Propose Resolution</button>');
+		$('#buttonline').append('<button onclick="MainScreen.raise(\'S\');"><img src="./images/S_Icon.png" height=20>ame Topic</button>');
+		$('#buttonline').append('<button onclick="MainScreen.raise(\'N\');"><img src="./images/N_Icon.png" height=20>ew Topic</button>');
+		$('#buttonline').append('<button onclick="MainScreen.raise(\'A\');"><img src="./images/A_Icon.png" height=20>nswer to Question</button>');
+		$('#buttonline').append('<button onclick="MainScreen.raise(\'P\');"><img src="./images/P_Icon.png" height=20>ropose Resolution</button>');
 		if(UserInfo.hand.raised)	//change to check if hand is currently raised
 		{
 			$('#buttonline').append('      ');
@@ -272,8 +251,15 @@ var MainScreen = {
 				var firstformat = ' style="color: #ff3333; font-size: 25px"';
 				var firsttext = 'Current Speaker: ';
 				var uid;
+				var first = true;
 				data.hands.forEach(function(hand)
 				{
+					if(first) first = false;
+					else
+					{
+						$('#theList').append(PageLayout.genListing(IDGen.newID(), hand.name, hand.ID, hand.type, hand.comment, (hand.name==UserInfo.name&&hand.ID==UserInfo.ID), UserInfo.isMod));
+					}
+					/*
 					uid = IDGen.newID();
 					$('#theList').append('<p id="'+uid+'"'+firstformat+'></p>');
 					if(hand.type == 'S') $('#'+uid).append('<img src="images/S_Icon.png" height="25" width="25"></img>');
@@ -297,6 +283,7 @@ var MainScreen = {
 					
 					firstformat = '';
 					firsttext = '';
+					*/
 				});
 			}
 		});
@@ -356,7 +343,6 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 	},
 	suggest: function()
 	{
-		alert($('#suggestionbox').val());
 		var composite = {
 			name: $('#suggestionbox').val(),
 			ID: Math.floor((Math.random*10000)+1),
