@@ -22,6 +22,7 @@ var IDGen = {
 };
 
 var updateLoop = false;
+var currentMOTD = '';
 
 var UserInfo = {
 	name: '',
@@ -196,21 +197,31 @@ var MainScreen = {
 	load: function()
 	{
 		$('#origin').empty();
-		$('#origin').append('<div id="title"></div>');
-		$('#origin').append('<div id="controls"></div>');
-		$('#origin').append('<div id="theList"></div>');
-		$('#title').append('<table><tr><td><img src="images/TOHRU_Hand.png"></img></td><td><p>Trace Online Hand Raising Utility</p><p id="MOTD"></p></td></tr></table>');
+		//$('#origin').append('<div id="title"></div>');
+		//$('#origin').append('<div id="controls"></div>');
+		//$('#origin').append('<div id="theList"></div>');
+		//$('#title').append('<table><tr><td><img src="images/TOHRU_Hand.png"></img></td><td><p>Trace Online Hand Raising Utility</p><p id="MOTD"></p></td></tr></table>');
 		/*
 		$('#title').append('<img src="images/TOHRU_Hand.png" style="float:left"></img>');
 		$('#title').append('<p style="float:left">Trace Online Hand Raising Utility</p>');
 		$('#title').append('<div id="MOTD"></div>');
 		*/
+		$('#origin').append(PageLayout.MainScreen);
 		updateLoop = true;
+		$.get('/list/fetch', UserInfo, function(data)	//set initial display data
+		{
+			if(data.key != '')
+			{
+				alert(data.MOTD);
+				currentMOTD = data.MOTD;
+			}
+		});
 		this.drawControls();
 		this.drawList();
 	},
 	drawControls: function()
 	{
+		/*
 		var comval;
 		$('#controls').empty();
 		$('#controls').append('<p id="commentline"></p>');
@@ -237,6 +248,22 @@ var MainScreen = {
 			$('#insertline').append('  ');
 			$('#insertline').append('<button onclick="ModFunctions.suggest()">Add</button>');
 		}
+		*/
+		if(UserInfo.isMod)
+		{
+			$('#MOTD').empty();
+			$('#MOTD').append('<input id="MOTDbox" type="text" value="'+currentMOTD+'"><button onclick="ModFunctions.setMOTD()">Set Message</button>');
+		}
+		$('#controls').empty();
+		$('#modcontrols').empty();
+		$('#controls').append(PageLayout.controls.main);
+		if(UserInfo.hand.raised) $('#controls').append(PageLayout.controls.down);
+		if(UserInfo.isMod)
+		{
+			$('#controls').append(PageLayout.controls.suggest);
+			$('#modcontrols').append(PageLayout.controls.modbox);
+		}
+		
 	},
 	drawList: function()
 	{
@@ -244,13 +271,23 @@ var MainScreen = {
 		{
 			if(data.key != '' && data._rev != MainScreen.lastRev)
 			{
+				currentMOTD = data.MOTD;
+				
 				MainScreen.lastRev = data._rev;
-				$('#MOTD').empty();
-				$('#MOTD').append('<p>'+data.MOTD+'</p>');
+				if(!UserInfo.isMod)
+				{
+					$('#MOTD').empty();
+					$('#MOTD').append(data.MOTD);
+				}
+				//$('#MOTD').empty();
+				//$('#MOTD').append('<p>'+data.MOTD+'</p>');
+				$('#speaker').empty();
+				$('#speaker').append(data.hands[0].name);
+				if(data.hands[0].comment != '') $('#speaker').append(' ['+data.hands[0].comment+']');
 				$('#theList').empty();
-				var firstformat = ' style="color: #ff3333; font-size: 25px"';
-				var firsttext = 'Current Speaker: ';
-				var uid;
+				//var firstformat = ' style="color: #ff3333; font-size: 25px"';
+				//var firsttext = 'Current Speaker: ';
+				//var uid;
 				var first = true;
 				data.hands.forEach(function(hand)
 				{
@@ -361,6 +398,27 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 	advance: function()
 	{
 		$.post('/list/advance', UserInfo);
+	},
+	modnext: function()
+	{
+		$.post('/list/modnext', UserInfo);
+	},
+	setMOTD: function()
+	{
+		var composite = {
+			name: UserInfo.name,
+			ID: UserInfo.ID,
+			meeting: UserInfo.meeting,
+			key: UserInfo.key,
+			modpass: '',
+			isMod: true,
+			hand: {
+				raised: false,
+				type: '!',
+				comment: $('#MOTDbox').val()
+			}
+		};
+		$.post('/list/changeMOTD', composite);
 	}
 };
 

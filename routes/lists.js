@@ -382,7 +382,7 @@ modnext = function(req, res)
 				type: req.body.hand.type,
 				comment: req.body.hand.comment
 			};
-			body.hands.shift();
+			//body.hands.shift();
 			body.update = Date.now();
 			body.hands.unshift(hand);
 			db.insert(body, function(err, body)
@@ -401,6 +401,35 @@ modnext = function(req, res)
 	});
 };
 router.post('/modnext', function(req, res){modnext(req, res);});
+
+changeMOTD = function(req, res)
+{
+	db.get(req.body.meeting, function(err, body)
+	{
+		if(err)
+		{
+			res.json({});
+		}
+		else
+		{
+			body.update = Date.now();
+			body.MOTD = req.body.hand.comment;
+			db.insert(body, function(err, body)
+			{
+				if(err)
+				{
+					changeMOTD(req, res);
+				}
+				else
+				{
+					console.log('Moderator changed MOTD to '+req.body.hand.comment);
+					res.json({success: true});
+				}
+			});
+		}
+	});
+};
+router.post('/changeMOTD', function(req, res){changeMOTD(req, res);});
 
 /**
  * Fetches meeting data if the key matches
