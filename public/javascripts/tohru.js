@@ -212,12 +212,12 @@ var MainScreen = {
 		{
 			if(data.key != '')
 			{
-				alert(data.MOTD);
 				currentMOTD = data.MOTD;
 			}
 		});
 		this.drawControls();
 		this.drawList();
+		$('#origin').append('<button onclick="MainScreen.userList();">User List</button>');
 	},
 	drawControls: function()
 	{
@@ -340,6 +340,26 @@ var MainScreen = {
 		UserInfo.hand.comment = '';
 		$.post('/list/lower', UserInfo);
 		this.drawControls();
+	},
+	userList: function()
+	{
+		updateLoop = false;
+		UserList.load();
+	}
+};
+
+var UserList = {
+	load: function() {
+		$('#origin').empty();
+		$('#origin').append('<p><button onclick="MainScreen.load();">Go Back</button></p>');
+		$('#origin').append('<p>FULL MEETING ATTENDANCE:</p>');
+		$.get('/list/fetch', UserInfo, function(data)
+		{
+			data.users.forEach(function(user)
+			{
+				$('#origin').append('<p>'+user.name+'</p>');
+			});
+		});
 	}
 };
 
