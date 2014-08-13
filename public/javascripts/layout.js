@@ -12,9 +12,9 @@ var PageLayout = {
 	genListing: function(uid, name, ID, type, comment, isMine, isMod)
 	{
 		var reply = '<p id='+uid+'>';
-		if(isMod) reply += '<img src="./images/Delete_Icon.png" height=20 onclick="ModFunctions.forceDown('+name+', '+ID+')">';
+		if(isMod) reply += '<img src="./images/Delete_Icon.png" height=20 onclick="ModFunctions.forceDown(\''+name+'\', '+ID+');">';
 		reply += '<img src="./images/'+type+'_Icon.png" height=20>';
-		if(isMod) reply += '<img src="./images/Totop_Icon.png" height=20 onclick="ModFunctions.toTop('+name+', '+ID+')">';
+		if(isMod) reply += '<img src="./images/Totop_Icon.png" height=20 onclick="ModFunctions.toTop(\''+name+'\', '+ID+');">';
 		if(isMine) reply += '<span style="color: blue">';
 		reply += '<span style="font-weight: bold">';
 		reply += name;

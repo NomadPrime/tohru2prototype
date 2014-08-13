@@ -402,14 +402,14 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 	{
 		var composite = {
 			name: $('#suggestionbox').val(),
-			ID: Math.floor((Math.random*10000)+1),
+			ID: Math.floor((Math.random()*100000)+1),
 			meeting: UserInfo.meeting,
 			key: UserInfo.key,
 			modpass: '',
 			isMod: false,
 			hand: {	
 				raised: true,
-				type: '!',
+				type: '+',
 				comment: ''
 			}
 		};
