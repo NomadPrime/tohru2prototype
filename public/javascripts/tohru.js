@@ -196,6 +196,7 @@ var MainScreen = {
 	lastRev: '',
 	load: function()
 	{
+		this.lastRev = '';
 		$('#origin').empty();
 		//$('#origin').append('<div id="title"></div>');
 		//$('#origin').append('<div id="controls"></div>');
@@ -217,7 +218,6 @@ var MainScreen = {
 		});
 		this.drawControls();
 		this.drawList();
-		$('#origin').append('<button onclick="MainScreen.userList();">User List</button>');
 	},
 	drawControls: function()
 	{
@@ -328,7 +328,7 @@ var MainScreen = {
 	raise: function(raisetype)
 	{
 		UserInfo.hand.type = raisetype;
-		if($('#comment').val() != 'Add a comment (optional)') UserInfo.hand.comment = $('#comment').val();
+		if($('#comment').val() != '(optional) reminder/hint about what you are going to say') UserInfo.hand.comment = $('#comment').val();
 		$.post('/list/raise', UserInfo);
 		UserInfo.hand.raised = true;
 		this.drawControls();
