@@ -21,6 +21,115 @@ var IDGen = {
 	}
 };
 
+/**
+ * Functions for managing cookies stored in the browser data
+ */
+var cookies = {
+	/**
+	 * Stores all UserData entries in cookies, init is for first sign-in
+	 */
+	store: function(init)
+	{
+		exp = 24;	//number of hours before cookies expire
+		cookies.set('alpha', 'omega');
+		cookies.set('uname', UserInfo.name);
+		cookies.set('uid', UserInfo.ID);
+		cookies.set('umeeting', UserInfo.meeting);
+		cookies.set('ukey', UserInfo.key);
+		if(init) cookies.set('umodpass', UserInfo.modpass);
+		else cookies.set('umodpass', this.get('umodpass'));
+		cookies.set('uismod', UserInfo.isMod);
+		cookies.set('uhraised', UserInfo.hand.raised);
+		cookies.set('uhtype', UserInfo.hand.type);
+		cookies.set('uhcomment', UserInfo.hand.comment);
+	},
+	/**
+	 * Loads all UserData entries from cookies
+	 */
+	load: function()
+	{
+		if(cookies.get('alpha') == 'omega')	//checking to see if cookie values are there
+		{
+			UserInfo.name = cookies.get('uname');
+			UserInfo.ID = cookies.get('uid');
+			UserInfo.meeting = cookies.get('umeeting');
+			UserInfo.key = cookies.get('ukey');
+			UserInfo.modpass = cookies.get('umodpass');
+			UserInfo.isMod = (cookies.get('uismod') == 'true');
+			UserInfo.hand.raised = (cookies.get('uhraised') == 'true');
+			UserInfo.hand.type = cookies.get('uhtype');
+			UserInfo.hand.comment = cookies.get('uhcomment');
+			return true;
+		}
+		else return false;
+	},
+	/**
+	 * Initializes both the cookie and the UserInfo
+	 */
+	wipe: function()
+	{
+		if(cookies.get('alpha') == 'omega')
+		{
+			cookies.del('uname');
+			cookies.del('uid');
+			cookies.del('umeeting');
+			cookies.del('ukey');
+			cookies.del('umodpass');
+			cookies.del('uismod');
+			cookies.del('uhraised');
+			cookies.del('uhtype');
+			cookies.del('uhcomment');
+			UserInfo = {
+				name: '',
+				ID: Math.floor((Math.random()*1000000)+1),
+				meeting: '',
+				key: '',
+				modpass: '',
+				isMod: false,
+				hand: {
+					raised: false,
+					type: '',
+					comment: ''
+				}
+			};
+		}
+	},
+	/**
+	 * Sets a single cookie value
+	 */
+	set: function(name, value)
+	{
+		var exhours = 24;	//number of hours before cookies expire
+		var d = new Date();
+		d.setTime(d.getTime() + exhours*60*60*1000);
+		document.cookie = name + '=' + value + '; expires=' + d.toGMTString();
+	},
+	/**
+	 * Gets a single cookie value
+	 */
+	get: function(name)
+	{
+		var cname = name + "=";
+    	var ca = document.cookie.split(';');
+    	for(var i=0; i<ca.length; i++)
+    	{
+    		var c = ca[i];
+    		while (c.charAt(0)==' ') c = c.substring(1);
+    		if (c.indexOf(cname) != -1) return c.substring(cname.length,c.length);
+    	}
+    return "";
+	},
+	/**
+	 * Deletes a single cookie value
+	 */
+	del: function(name)
+	{
+		var d = new Date();
+		d.setTime(0);
+		document.cookie = name + '=' + name + '; expires=' + d.toGMTString();
+	}
+};
+
 var updateLoop = false;
 var currentMOTD = '';
 
@@ -29,7 +138,7 @@ var UserInfo = {
 	ID: Math.floor((Math.random()*1000000)+1),
 	meeting: '',
 	key: '',
-	modpass: '',	//TODO: secure this somehow? Or clear it? (yknow, for get requests)
+	modpass: '',
 	isMod: false,
 	hand: {
 		raised: false,
@@ -78,6 +187,8 @@ var WelcomeScreen = {
 				else
 				{
 					UserInfo.key = data.key;
+					cookies.store(true);
+					UserInfo.modpass = '';
 					MainScreen.load();
 				}
 			});
@@ -137,6 +248,8 @@ var ModPassScreen = {
 				UserInfo.key = data.key;
 				UserInfo.isMod = true;
 				UserInfo.name = UserInfo.name + ' (Moderator)';
+				cookies.store(true);
+				UserInfo.modpass = '';
 				MainScreen.load();
 			}
 		});
@@ -279,8 +392,6 @@ var MainScreen = {
 					$('#MOTD').empty();
 					$('#MOTD').append(data.MOTD);
 				}
-				//$('#MOTD').empty();
-				//$('#MOTD').append('<p>'+data.MOTD+'</p>');
 				$('#speaker').empty();
 				$('#speaker').append(data.hands[0].name);
 				if(data.hands[0].comment != '') $('#speaker').append(' ['+data.hands[0].comment+']');
@@ -289,12 +400,25 @@ var MainScreen = {
 				//var firsttext = 'Current Speaker: ';
 				//var uid;
 				var first = true;
+				var handup = false;
 				data.hands.forEach(function(hand)
 				{
 					if(first) first = false;
 					else
 					{
 						$('#theList').append(PageLayout.genListing(IDGen.newID(), hand.name, hand.ID, hand.type, hand.comment, (hand.name==UserInfo.name&&hand.ID==UserInfo.ID), UserInfo.isMod));
+					}
+					if(hand.name==UserInfo.name && hand.ID==UserInfo.ID)
+					{
+						var redraw = UserInfo.hand.raised;
+						UserInfo.hand.raised = true;
+						UserInfo.hand.type = hand.type;
+						UserInfo.hand.comment = hand.comment;
+						handup = true;
+						if(!redraw)
+						{
+							MainScreen.drawControls();
+						}
 					}
 					/*
 					uid = IDGen.newID();
@@ -322,6 +446,11 @@ var MainScreen = {
 					firsttext = '';
 					*/
 				});
+				if(handup == false && UserInfo.hand.raised)
+				{
+					UserInfo.hand.raised = false;
+					MainScreen.drawControls();
+				}
 			}
 		});
 	},
@@ -345,6 +474,11 @@ var MainScreen = {
 	{
 		updateLoop = false;
 		UserList.load();
+	},
+	logOut: function()
+	{
+		cookies.wipe();
+		WelcomeScreen.load();
 	}
 };
 
@@ -442,10 +576,40 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 	}
 };
 
-
 $(document).ready(function()
 {
-	WelcomeScreen.load();
+	if(cookies.load())
+	{
+		$.post('/list/meetexists', UserInfo, function(data)
+		{
+			if(data.exists)
+			{
+				if(UserInfo.isMod == true)
+				{
+					$.post('/list/checkmod', UserInfo, function(data)
+					{
+						if(data.pass)
+						{
+							cookies.store();
+							MainScreen.load();
+						}
+						else
+						{
+							alert('Stored password is invalid for this meeting!');
+							cookies.wipe();
+							WelcomeScreen.load();
+						}
+					});
+				}
+				else
+				{
+					cookies.store();
+					MainScreen.load();
+				}
+			}
+		});
+	}
+	else WelcomeScreen.load();
 	setInterval(function()
 	{
 		if(updateLoop)

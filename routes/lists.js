@@ -139,28 +139,40 @@ router.post('/registermod', function(req, res)
 	//console.log(pass);
 	modPassCheck(req.body.meeting, req.body.modpass, function(check)
 	{
-	if(check)
-	{
-		db.get(req.body.meeting, function(err, body)
+		if(check)
 		{
-			if(err)
+			db.get(req.body.meeting, function(err, body)
 			{
-				res.json({key:-52});
-			}
-			else
-			{
-				updateRegister(db, req.body.meeting, req.body.name+' (Moderator)');
-				console.log('User "'+req.body.name+'" registered with moderator access in meeting "'+req.body.meeting+'"');
-				res.json({key: body.key});
-			}
-		});
-	}
-	else
-	{
-		console.log('User "'+req.body.name+'" attempted to gain moderator access to meeting "'+req.body.meeting+'" with invalid password "'+req.body.modpass+'"');
-		res.json({key:-52});
-	}
+				if(err)
+				{
+					res.json({key:-52});
+				}
+				else
+				{
+					updateRegister(db, req.body.meeting, req.body.name+' (Moderator)');
+					console.log('User "'+req.body.name+'" registered with moderator access in meeting "'+req.body.meeting+'"');
+					res.json({key: body.key});
+				}
+			});
+		}
+		else
+		{
+			console.log('User "'+req.body.name+'" attempted to gain moderator access to meeting "'+req.body.meeting+'" with invalid password "'+req.body.modpass+'"');
+			res.json({key:-52});
+		}
+	});
 });
+
+/**
+ * Checks to see if given password is valid
+ */
+router.post('/checkmod', function(req, res)
+{
+	modPassCheck(req.body.meeting, req.body.modpass, function(check)
+	{
+		if(check) res.json({pass:true});
+		else res.json({pass:false});
+	});
 });
 
 /**
