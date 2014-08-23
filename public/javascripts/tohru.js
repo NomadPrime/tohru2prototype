@@ -20,6 +20,7 @@ var IDGen = {
 		return id;
 	}
 };
+AllSet = false;
 
 /**
  * Functions for managing cookies stored in the browser data
@@ -578,7 +579,13 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 
 $(document).ready(function()
 {
-	if(cookies.load())
+	PageLayout.init();
+	setInterval(function()
+	{
+		if(AllSet)
+		{
+			AllSet = false;
+		if(cookies.load())
 	{
 		$.post('/list/meetexists', UserInfo, function(data)
 		{
@@ -610,8 +617,7 @@ $(document).ready(function()
 		});
 	}
 	else WelcomeScreen.load();
-	setInterval(function()
-	{
+	}
 		if(updateLoop)
 		{
 			MainScreen.drawList();

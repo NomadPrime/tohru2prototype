@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<title> LAYOUT TESTING PAGE </title>
+	</head>
+	<body>
+		<div id="origin">
+			<p>[WELCOME SCREEN]</p>
+			<p>
+				WELCOME TO TOHRU
+			</p>
+			<p>
+				Name(affil.):
+				<input type="text" id="namefield" value="UserInfo.name">
+			</p>
+			<p>
+				Meeting Name:
+				<input type="text" id="meetingfield" value="UserInfo.meeting">
+			</p>
+			<p>
+				<button onclick="WelcomeScreen.create();">
+					Create Meeting
+				</button>
+				<button onclick="WelcomeScreen.join();">
+					Join Meeting
+				</button>
+				<button onclick="WelcomeScreen.modpass();">
+					Login as Moderator
+				</button>
+			</p>
+			<p>[WELCOME SCREEN]</p>
+			<p>[MODPASS SCREEN]</p>
+			<p>
+				Please Enter the Moderator Password for "<span id="MEETINGNAME">[MEETING NAME]</span>"
+			</p>
+			<p>
+				Password: 
+				<input type="password" id="passfield" value="">
+				<button onclick="ModPassScreen.submit()">
+					Login
+				</button>
+				<button onclick="ModPassScreen.goback()">
+					Go Back
+				</button>
+			</p>
+			<p>[MODPASS SCREEN]</p>
+		</div>
+	</body>
+</html>

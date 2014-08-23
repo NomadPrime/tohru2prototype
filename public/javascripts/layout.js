@@ -1,6 +1,9 @@
 var PageLayout = {
-	WelcomeScreen: '<p>WELCOME TO TOHRU</p><p>Name(affil.): <input type="text" id="namefield" value="UserInfo.name"></input></p><p>Meeting Name:<input type="text" id="meetingfield" value="UserInfo.meeting"></input></p><p><button onclick="WelcomeScreen.create();">Create Meeting</button><button onclick="WelcomeScreen.join();">Join Meeting</button><button onclick="WelcomeScreen.modpass();">Login as Moderator</button></p>',
-	ModPassScreen: '<p>Please Enter the Moderator Password for "<span id="MEETINGNAME">[MEETING NAME]</span>"</p><p>Password:<input type="password" id="passfield" value=""> <button onclick="ModPassScreen.submit()">Login</button><button onclick="ModPassScreen.goback()">Go Back</button></p>',
+	loaded: false,
+	//WelcomeScreen: '<p>WELCOME TO TOHRU</p><p>Name(affil.): <input type="text" id="namefield" value="UserInfo.name"></input></p><p>Meeting Name:<input type="text" id="meetingfield" value="UserInfo.meeting"></input></p><p><button onclick="WelcomeScreen.create();">Create Meeting</button><button onclick="WelcomeScreen.join();">Join Meeting</button><button onclick="WelcomeScreen.modpass();">Login as Moderator</button></p>',
+	WelcomeScreen: '',
+	//ModPassScreen: '<p>Please Enter the Moderator Password for "<span id="MEETINGNAME">[MEETING NAME]</span>"</p><p>Password:<input type="password" id="passfield" value=""> <button onclick="ModPassScreen.submit()">Login</button><button onclick="ModPassScreen.goback()">Go Back</button></p>',
+	ModPassScreen: '',
 	CreateScreen: '<p>Create a New Meeting:</p><p id="meetingline">Meeting Name:<input type="text" id="meetingfield" value="UserInfo.meeting"></p><p id="passline">Moderator Password:<input type="password" id="passfield" value=""></p><p id="buttonline"><button onclick="CreateScreen.create();">Create Meeting</button><button onclick="CreateScreen.goback();">Go Back</button></p>',
 	MainScreen: '<div><table><tr><th rowspan="3"><img src="./images/TOHRU_Hand.png" height=80></th><td><p> </p></td></tr><tr><td valign="bottom"><span style="font-size: 30px">Trace Online Hand Raising Utility</span></td></tr><tr><td><span id="MOTD" style="font-size: 20px; color: #0000ff"></span></td></tr></table></div><div id="controls"></div><p><span style="background-color: #cccccc">Current Speaker: <span id="speaker"></span></span></p><div id="modcontrols"></div><div id="theList"></div><button onclick="MainScreen.userList();">Full Attendance List</button><button onclick="MainScreen.logOut();">Log Out</button>',
 	controls: {
@@ -8,6 +11,16 @@ var PageLayout = {
 		down: '<p><button onclick="MainScreen.down();">Lower Hand</button></p>',
 		suggest: '<p><button onclick="ModFunctions.suggest()">Add Name Manually</button><input id="suggestionbox" type="text"></p>',
 		modbox: '<p><button onclick="ModFunctions.advance()">Next Speaker</button><button onclick="ModFunctions.modnext()">Moderator Speaks Next</button></p>',
+	},
+	init: function()
+	{
+		$.get('/lay/template', function(data)
+		{
+			//var parsed = data.split('<p>[WELCOME SCREEN]</p>');
+			PageLayout.WelcomeScreen = data.split('<p>[WELCOME SCREEN]</p>')[1];
+			PageLayout.ModPassScreen = data.split('<p>[MODPASS SCREEN]</p>')[1];
+			AllSet = true;
+		});
 	},
 	genListing: function(uid, name, ID, type, comment, isMine, isMod)
 	{
@@ -26,3 +39,8 @@ var PageLayout = {
 		return reply;
 	}
 };
+
+$(document).ready(function()
+{
+	PageLayout.init();
+});
