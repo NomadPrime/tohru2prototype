@@ -20,9 +20,8 @@ var PageLayout = {
 	},
 	init: function()
 	{
-		$.get('/lay/template', function(data)
+		$.get('/pagelayout', function(data)
 		{
-			//var parsed = data.split('<p>[WELCOME SCREEN]</p>');
 			PageLayout.WelcomeScreen = data.split('<p>[WELCOME SCREEN]</p>')[1];
 			PageLayout.ModPassScreen = data.split('<p>[MODPASS SCREEN]</p>')[1];
 			PageLayout.CreateScreen = data.split('<p>[CREATE SCREEN]</p>')[1];

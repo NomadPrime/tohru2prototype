@@ -16,7 +16,7 @@ router.get('/lay', function(req, res)
 	res.sendfile('./views/laytest.html');
 });
 
-router.get('/lay/template', function(req, res)
+router.get('/pagelayout', function(req, res)
 {
 	res.sendfile('./views/PageLayout.html');
 });
