@@ -71,6 +71,7 @@ var cookies = {
 	{
 		if(cookies.get('alpha') == 'omega')
 		{
+			cookies.del('alpha');
 			cookies.del('uname');
 			cookies.del('uid');
 			cookies.del('umeeting');
@@ -151,6 +152,7 @@ var UserInfo = {
 var WelcomeScreen = {
 	load: function()
 	{
+		document.title = "TOHRU Login";
 		$('#origin').empty();
 		$('#origin').append(PageLayout.WelcomeScreen);
 		$('#namefield').val(UserInfo.name);
@@ -230,9 +232,11 @@ var WelcomeScreen = {
 var ModPassScreen = {
 	load: function()
 	{
+		document.title = "Enter Moderator Password";
 		$('#origin').empty();
 		$('#origin').append(PageLayout.ModPassScreen);
-		$('#MEETINGNAME').replaceWith(UserInfo.meeting);
+		$('#MEETINGNAME').empty();
+		$('#MEETINGNAME').append(UserInfo.meeting);
 	},
 	submit: function()
 	{
@@ -264,6 +268,7 @@ var ModPassScreen = {
 var CreateScreen = {
 	load: function()
 	{
+		document.title = "Create New TOHRU Meeting";
 		$('#origin').empty();
 		$('#origin').append(PageLayout.CreateScreen);
 		$('#meetingfield').val(UserInfo.meeting);
@@ -299,6 +304,21 @@ var CreateScreen = {
 			});
 		}
 	},
+	checkunique: function()
+	{
+		UserInfo.meeting = $('#meetingfield').val();
+		$.post('/list/meetexists', UserInfo, function(data)
+		{
+			if(data.exists)
+			{
+				alert('Meeting name already taken.');
+			}
+			else
+			{
+				alert('Meeting name is available!');
+			}
+		});
+	},
 	goback: function()
 	{
 		UserInfo.meeting = $('#meetingfield').val();
@@ -310,6 +330,7 @@ var MainScreen = {
 	lastRev: '',
 	load: function()
 	{
+		document.title = "TOHRU";
 		this.lastRev = '';
 		$('#origin').empty();
 		//$('#origin').append('<div id="title"></div>');
@@ -374,7 +395,6 @@ var MainScreen = {
 		if(UserInfo.hand.raised) $('#controls').append(PageLayout.controls.down);
 		if(UserInfo.isMod)
 		{
-			$('#controls').append(PageLayout.controls.suggest);
 			$('#modcontrols').append(PageLayout.controls.modbox);
 		}
 		

@@ -13,8 +13,6 @@ var PageLayout = {
 		main: '',
 		//down: '<p><button onclick="MainScreen.down();">Lower Hand</button></p>',
 		down: '',
-		//suggest: '<p><button onclick="ModFunctions.suggest()">Add Name Manually</button><input id="suggestionbox" type="text"></p>',
-		suggest: '',
 		//modbox: '<p><button onclick="ModFunctions.advance()">Next Speaker</button><button onclick="ModFunctions.modnext()">Moderator Speaks Next</button></p>',
 		modbox: ''
 	},
@@ -28,14 +26,13 @@ var PageLayout = {
 			PageLayout.MainScreen = data.split('<p>[MAIN SCREEN]</p>')[1];
 			PageLayout.controls.main = data.split('<p>[CONTROLS-MAIN]</p>')[1];
 			PageLayout.controls.down = data.split('<p>[CONTROLS-DOWN]</p>')[1];
-			PageLayout.controls.suggest = data.split('<p>[CONTROLS-SUGGEST]</p>')[1];
 			PageLayout.controls.modbox = data.split('<p>[CONTROLS-MODBOX]</p>')[1];
 			AllSet = true;
 		});
 	},
 	genListing: function(uid, name, ID, type, comment, isMine, isMod)
 	{
-		var reply = '<p id='+uid+'>';
+		var reply = '<p class="handlisting" id='+uid+'>';
 		if(isMod) reply += '<img src="./images/Delete_Icon.png" height=20 onclick="ModFunctions.forceDown(\''+name+'\', '+ID+');" style="vertical-align:middle">';
 		reply += '<img src="./images/'+type+'_Icon.png" height=20 style="vertical-align:middle">';
 		if(isMod) reply += '<img src="./images/Totop_Icon.png" height=20 onclick="ModFunctions.toTop(\''+name+'\', '+ID+');" style="vertical-align:middle">';

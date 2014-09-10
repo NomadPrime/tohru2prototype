@@ -468,4 +468,12 @@ router.get('/fetch', function(req, res)
 	});
 });
 
+/**
+ * Sends meeting names and passwords associated with given email to that email
+ */
+router.post('/email', function(req, res)
+{
+	//TODO: make this
+});
+
 module.exports = router;

@@ -1,0 +1,75 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.indent
+{
+	margin-left: 2em;
+}
+.logomain
+{
+	
+}
+.logoimg
+{
+	display:inline-block;
+}
+.logotext
+{
+	display: inline-block;
+	position: relative;
+}
+.logotitle
+{
+	position: relative;
+	top: -20px;
+}
+.logomotd
+{
+	position: relative;
+	top: -10px;
+	color: #0000FF;
+}
+
+
+
+
+
+
+
+.entryfield
+{
+	margin-left: 1em;
+}
+.controlbox
+{
+	border-style: ridge;
+}
+.modbox
+{
+	border-style: ridge;
+}
+.speakerbox
+{
+	font-size: 200%;
+}
+.handlisting
+{
+	
+}

@@ -2,39 +2,72 @@
 <html>
 	<head>
 		<title> LAYOUT TESTING PAGE </title>
+		<link rel="stylesheet" type="text/css" href="stylesheets/tohru.css">
 	</head>
 	<body>
 		<div id="origin">
 			<p>[WELCOME SCREEN]</p>
+			<div class="logomain">
+				<img class="logoimg" src="./images/TOHRU_hand.png" height=80>
+				<div class="logotext">
+					<div class="logotitle">
+						Trace Online Hand Raising Utility
+					</div>
+					<div class="logomotd">
+						MOTD HERE
+					</div>
+				</div>
+			</div>
+			
+			
+			<h1>
+				To Enter a Meeting:
+			</h1>
+			<div class="indent">
 			<p>
-				WELCOME TO TOHRU
+				Meeting ID:
+				<br/>
+			<input class="entryfield" type="text" id="meetingfield" value="UserInfo.meeting">
 			</p>
 			<p>
-				Name(affil.):
-				<input type="text" id="namefield" value="UserInfo.name">
+				Your Name (plus affiliation):
+				<br/>
+			<input class="entryfield" type="text" id="namefield" value="UserInfo.name">
 			</p>
 			<p>
-				Meeting Name:
-				<input type="text" id="meetingfield" value="UserInfo.meeting">
-			</p>
-			<p>
-				<button onclick="WelcomeScreen.create();">
-					Create Meeting
-				</button>
 				<button onclick="WelcomeScreen.join();">
-					Join Meeting
+					Enter as Participant
 				</button>
 				<button onclick="WelcomeScreen.modpass();">
-					Login as Moderator
+					Enter as Moderator
 				</button>
 			</p>
+			<br/>
+			<br/>
+			<p>
+				TOHRU is a hand-raising utility created by the Trace Center (U of Wisconsin) and hosted by the Raising the Floor Consortium. It is free to use but contributions are welcome. Versions that can operate behind firewalls are available.' ('contributions' and 'are available' are links contributions to contribution page on RTF website and are available is mailto to info@raisingthefloor.org with a subject of 'behind firewall installation of TOHRU')
+			</p>
+			</div>
+			<br/>
+			<br/>
+			<hr/>
+			<h1>
+				To Create a Meeting:
+			</h1>
+			<div class="indent">
+			<p>
+				NOTE: Meetings must be created prior to use.
+			</p>
+			<button onclick="WelcomeScreen.create();">
+				Create a Meeting
+			</button>
+			</div>
 			<p>[WELCOME SCREEN]</p>
 			<p>[MODPASS SCREEN]</p>
 			<p>
-				Please Enter the Moderator Password for "<span id="MEETINGNAME">[MEETING NAME]</span>"
+				Please Enter the Moderator Password for "<span id="MEETINGNAME" style="font-weight: bold">[MEETING NAME]</span>":
 			</p>
 			<p>
-				Password: 
 				<input type="password" id="passfield" value="">
 				<button onclick="ModPassScreen.submit()">
 					Login
@@ -46,14 +79,29 @@
 			<p>[MODPASS SCREEN]</p>
 			<p>[CREATE SCREEN]</p>
 			<p>
-				Create a New Meeting:
+				Before TOHRU can be used in a meeting, the meeting has to be registered and given a unique name. The name must be unique to all meetings registered on the server.
+				Once a name is registered it will be retained for 2 months after its last use (moderator login). If you want to preserve a meeting title please log in at least once every two months as a moderator.
+			</p>
+			<p>
+				Security:
+			</p>
+			<p>
+				If meetings are private and password-like protection is desired, simply use a longer name and/or append a unique password or passphrase to the end of the name (e.g. "ACME Monthly Meeting - 12&#G")
+			</p>
+			<p>
+				Enter Meeting Name:
 			</p>
 			<p id="meetingline">
 				Meeting Name: 
 				<input type="text" id="meetingfield" value="UserInfo.meeting">
 			</p>
+			<button onclick="CreateScreen.checkunique();">
+				Check Availability
+			</button>
+			<p>
+				Create Moderator Password:
+			</p>
 			<p id="passline">
-				Moderator Password: 
 				<input type="password" id="passfield" value="">
 			</p>
 			<p id="buttonline">
@@ -64,6 +112,9 @@
 					Go Back
 				</button>
 			</p>
+			<!--
+				TODO: PUT IN EMAIL STUFF HERE
+			!-->
 			<p>[CREATE SCREEN]</p>
 			<p>[MAIN SCREEN]</p>
 			<div>
@@ -79,14 +130,15 @@
 					</tr>
 				</table>
 			</div>
-			<div id="controls"></div>
+			<div id="controls" class="controlbox"></div>
+			<div id="modcontrols"></div>
 			<p>
-				<span style="background-color: #cccccc">
+				<span class="speakerbox">
 					Current Speaker: 
 					<span id="speaker"></span>
 				</span>
 			</p>
-			<div id="modcontrols"></div><div id="theList"></div>
+			<div id="theList"></div>
 			<button onclick="MainScreen.userList();">
 				Full Attendance List
 			</button>
@@ -120,23 +172,23 @@
 				</button>
 			</p>
 			<p>[CONTROLS-DOWN]</p>
-			<p>[CONTROLS-SUGGEST]</p>
-			<p>
-				<button onclick="ModFunctions.suggest()">
-					Add Name Manually
-				</button>
-				<input id="suggestionbox" type="text">
-			</p>
-			<p>[CONTROLS-SUGGEST]</p>
 			<p>[CONTROLS-MODBOX]</p>
-			<p>
-				<button onclick="ModFunctions.advance()">
-					Next Speaker
-				</button>
-				<button onclick="ModFunctions.modnext()">
-					Moderator Speaks Next
-				</button>
-			</p>
+			<div class="modbox">
+				<p>
+					<button onclick="ModFunctions.suggest()">
+						Add Name Manually
+					</button>
+					<input id="suggestionbox" type="text">
+				</p>
+				<p>
+					<button onclick="ModFunctions.advance()">
+						Next Speaker
+					</button>
+					<button onclick="ModFunctions.modnext()">
+						Moderator Speaks Next
+					</button>
+				</p>
+			</div>
 			<p>[CONTROLS-MODBOX]</p>
 		</div>
 	</body>
