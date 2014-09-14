@@ -142,6 +142,7 @@ var UserInfo = {
 	key: '',
 	modpass: '',
 	isMod: false,
+	email: '',
 	hand: {
 		raised: false,
 		type: '',

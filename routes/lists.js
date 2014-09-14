@@ -1,6 +1,17 @@
 var express = require('express');
 var router = express.Router();
 var nano = require('nano')('http://localhost:5984');	//change to proper login
+var nodemailer = require('nodemailer');
+var mail = nodemailer.createTransport(
+/*	{
+		service: 'gmail',
+		debug: true,
+		auth: {
+			user: '',
+			pass: ''
+		}
+	}*/
+);
 
 ////////DATABASE SETUP////////
 nano.db.list(function(err, body)
@@ -193,6 +204,7 @@ router.post('/createnew', function(req, res)
 			};
 			var newMod = {
 				update: 0,
+				email: req.body.email,
 				password: req.body.modpass
 			};
 			db.insert(newMeeting, req.body.meeting);
@@ -468,12 +480,63 @@ router.get('/fetch', function(req, res)
 	});
 });
 
+buildEmail = function(email, rows, text, res)
+{
+	if(rows.length < 1)
+	{
+		mail.sendMail(
+			{
+				from: 'noreply@tohru.com',
+				to: email,
+				subject: 'TOHRU passwords',
+				text: text
+			}
+		, function(error, info)
+		{
+			if(error)
+			{
+				console.log("EMAIL FAILED");
+				console.log(error);
+				res.json({success: false});
+			}
+			else
+			{
+				console.log("EMAIL SUCCESS");
+				console.log(info);
+				res.json({success: true});
+			}
+		});
+	}
+	else if(/\#\#MODPASS\#\#*/.test(rows[0].id))
+	{
+		db.get(rows[0].id, function(err, body)
+		{
+			if(!err && body.email == email)
+			{
+				text = text + 'ID: ' + body._id.split('##MODPASS##')[1] + ' Password: ' + body.password + '\n';
+			}
+			rows.splice(0,1);
+			buildEmail(email, rows, text, res);
+		});
+	}
+	else
+	{
+		rows.splice(0,1);
+		buildEmail(email, rows, text, res);
+	}
+};
 /**
  * Sends meeting names and passwords associated with given email to that email
  */
 router.post('/email', function(req, res)
 {
-	//TODO: make this
+	var reply = 'ALL TOHRU MEETINGS LINKED TO THIS ACCOUNT:\n\n';
+	
+	db.list(function(err, body) {
+		if (!err) buildEmail(req.body.email, body.rows, reply, res);
+		else
+			console.log(err);
+	}); 
 });
 
 module.exports = router;
