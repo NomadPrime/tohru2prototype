@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var nano = require('nano')('http://localhost:5984');	//change to proper login
+//var nano = require('nano')('http://localhost:5984');	//change to proper login
+var nano = require('nano')('https://tohrutest:thisisthetohrupassword@tohrutest.couchappy.com:443');
+
+
 var nodemailer = require('nodemailer');
 var mail = nodemailer.createTransport(
 /*	{

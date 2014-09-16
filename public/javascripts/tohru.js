@@ -600,6 +600,7 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 
 $(document).ready(function()
 {
+	var refreshcounter = 1;
 	PageLayout.init();
 	setInterval(function()
 	{
@@ -641,7 +642,12 @@ $(document).ready(function()
 	}
 		if(updateLoop)
 		{
-			MainScreen.drawList();
+			if(refreshcounter >= 1)	//number of seconds between page refreshes
+			{
+				refreshcounter = 1;
+				MainScreen.drawList();
+			}
+			else refreshcounter++;
 		}
 	}, 1000);	//frame delay in milliseconds
 });
