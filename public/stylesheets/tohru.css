@@ -38,13 +38,14 @@
 .logotitle
 {
 	position: relative;
-	top: -20px;
+	top: -10px;
+	font-size: 175%
 }
-.logomotd
+.logobottom
 {
+	font-size: 175%;
 	position: relative;
 	top: -10px;
-	color: #0000FF;
 }
 
 
@@ -59,15 +60,38 @@
 }
 .controlbox
 {
+	max-width: 400px;
 	border-style: ridge;
+	padding: 5px;
+}
+.controlbox p
+{
+	margin: 5px;
+}
+.controlbox .commentbutton
+{
+	font-size: 14px;
 }
 .modbox
 {
 	border-style: ridge;
+	background-color: #CCCCCC;
+	max-width: 400px;
+	padding: 5px;
 }
 .speakerbox
 {
-	font-size: 200%;
+	background-color: #FFFF77	;
+	max-width: 400px;
+	border-style:ridge;
+	text-indent: 20px;
+	padding: 5px;
+	padding-bottom: 20px;
+}
+.speakerbox div
+{
+	text-indent: 53px;
+	font-weight: bold;
 }
 .handlisting
 {

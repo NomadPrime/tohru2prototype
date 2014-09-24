@@ -344,7 +344,9 @@ var MainScreen = {
 		$('#title').append('<div id="MOTD"></div>');
 		*/
 		$('#origin').append(PageLayout.MainScreen);
+		if(UserInfo.isMod) $('#origin').append(PageLayout.controls.modlegend);
 		updateLoop = true;
+		/*
 		$.get('/list/fetch', UserInfo, function(data)	//set initial display data
 		{
 			if(data.key != '')
@@ -352,6 +354,7 @@ var MainScreen = {
 				currentMOTD = data.MOTD;
 			}
 		});
+		*/
 		this.drawControls();
 		this.drawList();
 	},
@@ -387,8 +390,10 @@ var MainScreen = {
 		*/
 		if(UserInfo.isMod)
 		{
+			/*
 			$('#MOTD').empty();
 			$('#MOTD').append('<input id="MOTDbox" type="text" value="'+currentMOTD+'"><button onclick="ModFunctions.setMOTD()">Set Message</button>');
+			*/
 		}
 		$('#controls').empty();
 		$('#modcontrols').empty();
@@ -411,8 +416,10 @@ var MainScreen = {
 				MainScreen.lastRev = data._rev;
 				if(!UserInfo.isMod)
 				{
+					/*
 					$('#MOTD').empty();
 					$('#MOTD').append(data.MOTD);
+					*/
 				}
 				$('#speaker').empty();
 				$('#speaker').append(data.hands[0].name);
@@ -479,7 +486,7 @@ var MainScreen = {
 	raise: function(raisetype)
 	{
 		UserInfo.hand.type = raisetype;
-		if($('#comment').val() != '(optional) reminder/hint about what you are going to say') UserInfo.hand.comment = $('#comment').val();
+		if($('#comment').val() != 'Optional reminder/hint') UserInfo.hand.comment = $('#comment').val();
 		$.post('/list/raise', UserInfo);
 		UserInfo.hand.raised = true;
 		this.drawControls();
@@ -642,7 +649,7 @@ $(document).ready(function()
 	}
 		if(updateLoop)
 		{
-			if(refreshcounter >= 1)	//number of seconds between page refreshes
+			if(refreshcounter >= 5)	//number of seconds between page refreshes
 			{
 				refreshcounter = 1;
 				MainScreen.drawList();

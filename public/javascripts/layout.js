@@ -14,7 +14,8 @@ var PageLayout = {
 		//down: '<p><button onclick="MainScreen.down();">Lower Hand</button></p>',
 		down: '',
 		//modbox: '<p><button onclick="ModFunctions.advance()">Next Speaker</button><button onclick="ModFunctions.modnext()">Moderator Speaks Next</button></p>',
-		modbox: ''
+		modbox: '',
+		modlegend: ''
 	},
 	init: function()
 	{
@@ -27,6 +28,7 @@ var PageLayout = {
 			PageLayout.controls.main = data.split('<p>[CONTROLS-MAIN]</p>')[1];
 			PageLayout.controls.down = data.split('<p>[CONTROLS-DOWN]</p>')[1];
 			PageLayout.controls.modbox = data.split('<p>[CONTROLS-MODBOX]</p>')[1];
+			PageLayout.controls.modlegend = data.split('<p>[MOD-LEGEND]</p>')[1];
 			AllSet = true;
 		});
 	},
