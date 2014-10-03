@@ -27,6 +27,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/list', lists);
 
+var server = app.listen(3000);
+var db = require('./database');
+db.activate(server);
+
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -57,6 +61,14 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+/*
+var io = require('socket.io').listen(server);
+
+io.sockets.on('connection', function(socket)
+{
+	console.log('NEW USER CONNECTED');
+	
+});*/
 
 
-module.exports = app;
+//module.exports = app;

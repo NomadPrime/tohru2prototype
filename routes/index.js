@@ -21,4 +21,9 @@ router.get('/pagelayout', function(req, res)
 	res.sendfile('./views/PageLayout.html');
 });
 
+router.get('/getthesockets', function(req, res)
+{
+	res.sendfile('./node_modules/socket.io/node_modules/socket.io-client/socket.io.js');
+});
+
 module.exports = router;

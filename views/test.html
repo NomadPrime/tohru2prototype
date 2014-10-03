@@ -4,8 +4,27 @@
 		<title>
 			testpage
 		</title>
+		<script type="text/javascript" src="/getthesockets"></script>
+		<script>
+			var socket = io(':3000');
+			socket.emit('chat message', 'hello');
+			/*$('form').submit(function(){
+				preventDefault();
+				socket.emit('chat message', $('#m').val());
+				$('#m').val('');
+				return false;
+			});*/
+			function A(){socket.emit('chat message', 'A');};
+			function B(){socket.emit('chat message', 'B');};
+			function C(){socket.emit('chat message', 'C');};
+			function D(){socket.emit('chat message', 'D');};
+			socket.on('beep', function()
+			{
+				$('#origin').append('<button onclick="$(\'#origin\').empty();">BEEP</button>');
+			});
+		</script>
 		<script type="text/javascript" src="javascripts/jquery.js"></script>
-		<script type="text/javascript" src="javascripts/test.js"></script>
+		<script type="text/javascript" src="/javascripts/test.js"></script>
 		<style>
 .panel,.flip
 {
@@ -23,5 +42,9 @@ display:none;
 	</head>
 	<body>
 		<div id="origin"></div>
+		<button onclick="A();">A</button>
+		<button onclick="B();">B</button>
+		<button onclick="C();">C</button>
+		<button onclick="D();">D</button>
 	</body>
 </html>

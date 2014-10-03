@@ -21,6 +21,7 @@ var IDGen = {
 	}
 };
 AllSet = false;
+var socket = io(':3000');
 
 /**
  * Functions for managing cookies stored in the browser data
@@ -181,7 +182,7 @@ var WelcomeScreen = {
 		}
 		else
 		{
-			$.post('/list/register', UserInfo, function(data)
+			$.post('/list/register', UserInfo, function(data)//TODO
 			{
 				if(parseInt(data.key) < 0)
 				{
@@ -214,7 +215,7 @@ var WelcomeScreen = {
 		}
 		else
 		{
-			$.post('/list/meetexists', UserInfo, function(data)
+			$.post('/list/meetexists', UserInfo, function(data)//TODO
 			{
 				if(data.exists)
 				{
@@ -242,7 +243,7 @@ var ModPassScreen = {
 	submit: function()
 	{
 		UserInfo.modpass = $('#passfield').val();
-		$.post('/list/registermod', UserInfo, function(data)
+		$.post('/list/registermod', UserInfo, function(data)//TODO
 		{
 			if(parseInt(data.key) < 0)
 			{
@@ -290,7 +291,7 @@ var CreateScreen = {
 		}
 		else
 		{
-			$.post('/list/createnew', UserInfo, function(data)
+			$.post('/list/createnew', UserInfo, function(data)//TODO
 			{
 				if(data.nameTaken)
 				{
@@ -308,7 +309,7 @@ var CreateScreen = {
 	checkunique: function()
 	{
 		UserInfo.meeting = $('#meetingfield').val();
-		$.post('/list/meetexists', UserInfo, function(data)
+		$.post('/list/meetexists', UserInfo, function(data)//TODO
 		{
 			if(data.exists)
 			{
@@ -334,20 +335,11 @@ var MainScreen = {
 		document.title = "TOHRU";
 		this.lastRev = '';
 		$('#origin').empty();
-		//$('#origin').append('<div id="title"></div>');
-		//$('#origin').append('<div id="controls"></div>');
-		//$('#origin').append('<div id="theList"></div>');
-		//$('#title').append('<table><tr><td><img src="images/TOHRU_Hand.png"></img></td><td><p>Trace Online Hand Raising Utility</p><p id="MOTD"></p></td></tr></table>');
-		/*
-		$('#title').append('<img src="images/TOHRU_Hand.png" style="float:left"></img>');
-		$('#title').append('<p style="float:left">Trace Online Hand Raising Utility</p>');
-		$('#title').append('<div id="MOTD"></div>');
-		*/
 		$('#origin').append(PageLayout.MainScreen);
 		if(UserInfo.isMod) $('#origin').append(PageLayout.controls.modlegend);
 		updateLoop = true;
 		/*
-		$.get('/list/fetch', UserInfo, function(data)	//set initial display data
+		$.get('/list/fetch', UserInfo, function(data)	//set initial display data //TODO?
 		{
 			if(data.key != '')
 			{
@@ -407,7 +399,7 @@ var MainScreen = {
 	},
 	drawList: function()
 	{
-		$.get('/list/fetch', UserInfo, function(data)
+		$.get('/list/fetch', UserInfo, function(data)//TODO
 		{
 			if(data.key != '' && data._rev != MainScreen.lastRev)
 			{
@@ -487,7 +479,7 @@ var MainScreen = {
 	{
 		UserInfo.hand.type = raisetype;
 		if($('#comment').val() != 'Optional reminder/hint') UserInfo.hand.comment = $('#comment').val();
-		$.post('/list/raise', UserInfo);
+		$.post('/list/raise', UserInfo);//TODO
 		UserInfo.hand.raised = true;
 		this.drawControls();
 	},
@@ -496,7 +488,7 @@ var MainScreen = {
 		UserInfo.hand.type = '';
 		UserInfo.hand.raised = false;
 		UserInfo.hand.comment = '';
-		$.post('/list/lower', UserInfo);
+		$.post('/list/lower', UserInfo);//TODO
 		this.drawControls();
 	},
 	userList: function()
@@ -516,7 +508,7 @@ var UserList = {
 		$('#origin').empty();
 		$('#origin').append('<p><button onclick="MainScreen.load();">Go Back</button></p>');
 		$('#origin').append('<p>FULL MEETING ATTENDANCE:</p>');
-		$.get('/list/fetch', UserInfo, function(data)
+		$.get('/list/fetch', UserInfo, function(data)//TODO
 		{
 			data.users.forEach(function(user)
 			{
@@ -542,7 +534,7 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 				comment: ''
 			}
 		};
-		$.post('/list/lower', composite);
+		$.post('/list/lower', composite);//TODO
 	},
 	toTop: function(uname, uID)	//forces someone to put their hand down
 	{
@@ -559,7 +551,7 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 				comment: ''
 			}
 		};
-		$.post('/list/totop', composite);
+		$.post('/list/totop', composite);//TODO
 	},
 	suggest: function()
 	{
@@ -576,15 +568,15 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 				comment: ''
 			}
 		};
-		$.post('/list/raise', composite);
+		$.post('/list/raise', composite);//TODO
 	},
 	advance: function()
 	{
-		$.post('/list/advance', UserInfo);
+		$.post('/list/advance', UserInfo);//TODO
 	},
 	modnext: function()
 	{
-		$.post('/list/modnext', UserInfo);
+		$.post('/list/modnext', UserInfo);//TODO
 	},
 	setMOTD: function()
 	{
@@ -601,7 +593,7 @@ var ModFunctions = {	//Holds all the shiny things mods can do
 				comment: $('#MOTDbox').val()
 			}
 		};
-		$.post('/list/changeMOTD', composite);
+		$.post('/list/changeMOTD', composite);//TODO
 	}
 };
 
@@ -616,13 +608,13 @@ $(document).ready(function()
 			AllSet = false;
 		if(cookies.load())
 	{
-		$.post('/list/meetexists', UserInfo, function(data)
+		$.post('/list/meetexists', UserInfo, function(data)//TODO
 		{
 			if(data.exists)
 			{
 				if(UserInfo.isMod == true)
 				{
-					$.post('/list/checkmod', UserInfo, function(data)
+					$.post('/list/checkmod', UserInfo, function(data)//TODO
 					{
 						if(data.pass)
 						{

@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 //var nano = require('nano')('http://localhost:5984');	//change to proper login
 var nano = require('nano')('https://tohrutest:thisisthetohrupassword@tohrutest.couchappy.com:443');
-
-
 var nodemailer = require('nodemailer');
 var mail = nodemailer.createTransport(
 /*	{
@@ -35,26 +33,6 @@ nano.db.list(function(err, body)
 	}
 });
 var db = nano.use('tohru');
-
-
-/*
-nano.db.create('tohrutest');//test database for hello world stuff
-var testdb = nano.use('tohrutest');
-
-//create default document
-testdb.get('default', function(err, body) {
-	if(err) {
-		testdb.insert({alfa:true},'default');
-	}
-});
-
-/*
-router.get('/tester/list', function(req, res) {
-	testdb.get('THETEST', function(err, body){
-		if(!err) res.send(body);
-	});
-});
-*/
 
 router.post('/test', function(req, res)
 {
@@ -541,5 +519,34 @@ router.post('/email', function(req, res)
 			console.log(err);
 	}); 
 });
+
+
+
+
+/*
+var http = require('http').Server(express);
+var io = require('socket.io')(http);
+
+io.on('connection', function(socket)
+{
+	console.log('USER CONNECTED');
+	socket.on('disconnect', function()
+	{
+		console.log('USER DISCONNECTED');
+	});
+	socket.on('chat message', function(msg)
+	{
+		console.log('message: ' + msg);
+		if(msg == 'D')
+		{
+			io.emit('beep');
+		}
+	});
+});*/ 	
+
+/*http.listen(3286, function()
+{
+	console.log('SOCKET LISTENING ON PORT 3286');
+});*/
 
 module.exports = router;
